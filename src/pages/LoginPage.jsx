@@ -15,7 +15,7 @@ const LoginPage = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await fetch("https://api.example.com/login", {
+      const response = await fetch("https://railway.bookreview.techtrain.dev/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
