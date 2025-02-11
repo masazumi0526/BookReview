@@ -37,7 +37,7 @@ const LoginPage = () => {
     <div className="form-container">
       <h2>ログイン</h2>
       {errorMessage && <p className="error-message">{errorMessage}</p>}
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <InputField label="メールアドレス" type="email" name="email" register={register} validation={{ required: "必須項目です" }} error={errors.email} />
         <InputField label="パスワード" type="password" name="password" register={register} validation={{ required: "必須項目です" }} error={errors.password} />
 

@@ -32,7 +32,7 @@ const SignupPage = () => {
       });
 
       if (!response.ok) {
-        throw new Error("ユーザー登録に失敗しました");
+        throw new Error(result.ErrorMessageJP);
       }
 
       navigate("/login");
@@ -45,7 +45,7 @@ const SignupPage = () => {
     <div className="form-container">
       <h2>新規登録</h2>
       {errorMessage && <p className="error-message">{errorMessage}</p>}
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)}noValidate>
         <InputField label="ユーザー名" type="text" name="username" register={register} validation={{ required: "必須項目です" }} error={errors.username} />
         <InputField label="メールアドレス" type="email" name="email" register={register} validation={{ required: "必須項目です" }} error={errors.email} />
         <InputField label="パスワード" type="password" name="password" register={register} validation={{ required: "必須項目です", minLength: { value: 6, message: "6文字以上必要です" } }} error={errors.password} />
