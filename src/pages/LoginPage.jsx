@@ -27,7 +27,7 @@ const LoginPage = () => {
         throw new Error(result.ErrorMessageJP);
       }
 
-      navigate("/public/books"); // ダッシュボード画面に遷移
+      navigate("/public/books"); // Book一覧画面に遷移
     } catch (error) {
       setErrorMessage(error.message);
     }
