@@ -26,7 +26,7 @@ const SignupPage = () => {
         formData.append("icon", image);
       }
 
-      const response = await fetch("https://railway.bookreview.techtrain.dev/signup", {
+      const response = await fetch("https://railway.bookreview.techtrain.dev/users", {
         method: "POST",
         body: formData,
       });
