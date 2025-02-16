@@ -12,11 +12,9 @@ const bookSlice = createSlice({
   name: "books",
   initialState: { books: [], page: 0 },
   reducers: {
-    // 次のページへ進むアクション
     nextPage: (state) => {
       state.page += 1;
     },
-    // 前のページへ戻るアクション（最初のページでは動作しない）
     prevPage: (state) => {
       if (state.page > 0) state.page -= 1;
     },

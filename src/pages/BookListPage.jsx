@@ -17,7 +17,7 @@ const BookListPage = () => {
 
   return (
     <div>
-      <Header />  {/* ログイン状態によってヘッダーが変わる */}
+      <Header />
       <div className="book-list-container">
         <BookList books={books} />
         <Pagination />

@@ -3,16 +3,16 @@ import { Link } from "react-router-dom";
 import "../styles/Header.css";
 import { useSelector, useDispatch } from "react-redux";
 import { logout, selectUser } from "../store/authSlice";
-import { useNavigate } from "react-router-dom"; // 追加
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const dispatch = useDispatch();
-  const user = useSelector(selectUser);  // ログイン状態の取得
-  const navigate = useNavigate(); // 追加
+  const user = useSelector(selectUser);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    dispatch(logout()); // ログアウトアクションを呼び出し
-    navigate("/login"); // ログアウト後にログイン画面にリダイレクト
+    dispatch(logout());
+    navigate("/login");
   };
 
   return (
@@ -21,8 +21,9 @@ const Header = () => {
       <nav className="header__nav">
         {user ? (
           <div className="header__user-info">
-            <span className="header__username">{user.name || user.email}</span> {/* ユーザー名またはメールアドレスの表示 */}
-            <Link to="/profile" className="header__button">ユーザー情報編集</Link> {/* ユーザー情報編集リンク */}
+            <span className="header__username">{user.name || user.email}</span>
+            <Link to="/profile" className="header__button">ユーザー情報編集</Link>
+            <Link to="/new" className="header__button">レビュー投稿</Link> {/* 書籍レビュー投稿へのリンク追加 */}
             <button className="header__button" onClick={handleLogout}>
               ログアウト
             </button>
