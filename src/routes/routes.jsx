@@ -3,8 +3,9 @@ import { useSelector } from "react-redux";
 import SignupPage from "../pages/SignupPage";
 import LoginPage from "../pages/LoginPage";
 import BookListPage from "../pages/BookListPage";
+import BookDetailPage from "../pages/BookDetailPage"; // 追加
 import ProfilePage from "../pages/ProfilePage";
-import NewBookPage from "../pages/NewBookPage";  // 追加
+import NewBookPage from "../pages/NewBookPage";
 import { selectUser } from "../store/authSlice";
 
 const PrivateRoute = ({ element }) => {
@@ -20,7 +21,8 @@ const AppRoutes = () => {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/profile" element={<PrivateRoute element={<ProfilePage />} />} />
       <Route path="/public/books" element={<BookListPage />} />
-      <Route path="/new" element={<PrivateRoute element={<NewBookPage />} />} /> {/* 新規書籍レビュー投稿ページ */}
+      <Route path="/public/books/:id" element={<BookDetailPage />} /> {/* 追加 */}
+      <Route path="/new" element={<PrivateRoute element={<NewBookPage />} />} />
     </Routes>
   );
 };

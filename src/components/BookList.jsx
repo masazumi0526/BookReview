@@ -1,16 +1,18 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import "../styles/BookList.css";
 
 const BookList = ({ books }) => {
   return (
-    <div className="book-list">
+    <ul className="book-list">
       {books.map((book) => (
-        <div className="book-item" key={book.id}>
-          <h2 className="book-item__title">{book.title}</h2>
-          <p className="book-item__author">著者: {book.author}</p>
-          <p className="book-item__description">{book.description}</p>
-        </div>
+        <li key={book.id} className="book-item">
+          <Link to={`/public/books/${book.id}`} className="book-link">
+            {book.title}（{book.author}）
+          </Link>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 };
 
