@@ -59,8 +59,8 @@ const SignupPage = () => {
         await uploadIcon(image, userResult.token);
       }
 
-      // 書籍一覧画面に遷移
-      navigate("/public/books");
+      // signinにナビゲートしてるがルーティングでPrivateRouteの機能で書籍一覧画面に遷移
+      navigate("/signin");
     } catch (error) {
       setErrorMessage(error.message);
     }
