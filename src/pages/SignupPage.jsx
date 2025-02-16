@@ -1,19 +1,18 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { login } from "../store/authSlice";
 import InputField from "../components/InputField";
 import ImageUploader from "../components/ImageUploader";
 import "../styles/form.css";
 
 const SignupPage = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const [image, setImage] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const uploadIcon = async (file, token) => {
     const formData = new FormData();
@@ -33,37 +32,39 @@ const SignupPage = () => {
   };
 
   const onSubmit = async (data) => {
-  try {
-    const requestBody = {
-      name: data.username,
-      email: data.email,
-      password: data.password,
-    };
+    try {
+      const requestBody = {
+        name: data.username,
+        email: data.email,
+        password: data.password,
+      };
 
-    console.log("送信データ:", requestBody); // 送信するデータを確認
+      const userResponse = await fetch("https://railway.bookreview.techtrain.dev/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      });
 
-    const userResponse = await fetch("https://railway.bookreview.techtrain.dev/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestBody),
-    });
+      const userResult = await userResponse.json();
 
-    const userResult = await userResponse.json();
-    console.log("APIレスポンス:", userResult); // ここが重要！エラー内容を確認
+      if (!userResponse.ok) {
+        throw new Error(userResult.ErrorMessageJP || "ユーザー登録に失敗しました");
+      }
 
-    if (!userResponse.ok) {
-      throw new Error(userResult.ErrorMessageJP || "ユーザー登録に失敗しました");
+      // 認証情報を Redux に保存
+      dispatch(login({ user: { email: data.email }, token: userResult.token }));
+
+      // アイコン画像がある場合はアップロード
+      if (image) {
+        await uploadIcon(image, userResult.token);
+      }
+
+      // 書籍一覧画面に遷移
+      navigate("/public/books");
+    } catch (error) {
+      setErrorMessage(error.message);
     }
-
-    navigate("/public/books");
-  } catch (error) {
-    console.error("エラー:", error.message);
-    setErrorMessage(error.message);
-  }
-};
-
+  };
 
   return (
     <div className="form-container">

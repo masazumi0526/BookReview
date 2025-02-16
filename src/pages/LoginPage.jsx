@@ -1,17 +1,16 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { login } from "../store/authSlice";
 import InputField from "../components/InputField";
 import "../styles/form.css";
 
 const LoginPage = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const onSubmit = async (data) => {
     try {
@@ -27,7 +26,11 @@ const LoginPage = () => {
         throw new Error(result.ErrorMessageJP);
       }
 
-      navigate("/public/books"); // Book一覧画面に遷移
+      // 認証情報を Redux に保存
+      dispatch(login({ user: { email: data.email }, token: result.token }));
+
+      // 書籍一覧画面に遷移
+      navigate("/public/books");
     } catch (error) {
       setErrorMessage(error.message);
     }
