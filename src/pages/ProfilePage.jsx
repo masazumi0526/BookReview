@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectUser, selectToken, login } from "../store/authSlice";
 import InputField from "../components/InputField";
 import ImageUploader from "../components/ImageUploader";
+import { useNavigate } from "react-router-dom"; // 追加
 import "../styles/form.css";
 
 const ProfilePage = () => {
@@ -11,6 +12,7 @@ const ProfilePage = () => {
   const user = useSelector(selectUser);
   const token = useSelector(selectToken);
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // 追加
   const [image, setImage] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -73,10 +75,17 @@ const ProfilePage = () => {
         throw new Error("ユーザー情報の更新に失敗しました");
       }
 
-      // Redux の状態を更新
-      dispatch(login({ user: { ...user, name: data.username, email: data.email, iconUrl: updatedIconUrl }, token }));
+      // 成功メッセージを設定
+      setSuccessMessage("ユーザー情報が正常に更新されました。");
 
-      setSuccessMessage("ユーザー情報を更新しました");
+      // 認証されたユーザー情報を Redux ストアに再設定（オプション）
+      const updatedUser = await response.json();
+      dispatch(login({ user: updatedUser, token }));
+
+      // 書籍一覧画面に遷移
+      setTimeout(() => {
+        navigate("/public/books"); // 1秒後に書籍一覧画面に遷移
+      }, 1000); // 遷移前に少し待機
     } catch (error) {
       setErrorMessage(error.message);
     }
@@ -86,12 +95,14 @@ const ProfilePage = () => {
     <div className="form-container">
       <h2>ユーザー情報編集</h2>
       {errorMessage && <p className="error-message">{errorMessage}</p>}
-      {successMessage && <p className="success-message">{successMessage}</p>}
+      {successMessage && <p className="success-message">{successMessage}</p>} {/* 成功メッセージ */}
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <InputField label="ユーザー名" type="text" name="username" register={register} validation={{ required: "必須項目です" }} error={errors.username} />
         <InputField label="メールアドレス" type="email" name="email" register={register} validation={{ required: "必須項目です" }} error={errors.email} />
-        <InputField label="パスワード（変更する場合のみ入力）" type="password" name="password" register={register} validation={{ minLength: { value: 6, message: "6文字以上必要です" } }} error={errors.password} />
+        <InputField label="パスワード" type="password" name="password" register={register} validation={{ required: "必須項目です", minLength: { value: 6, message: "6文字以上必要です" } }} error={errors.password} />
+
         <ImageUploader setImage={setImage} />
+
         <button type="submit">更新</button>
       </form>
     </div>
