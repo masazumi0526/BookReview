@@ -6,7 +6,7 @@ import { logout, selectUser } from "../store/authSlice";
 
 const Header = () => {
   const dispatch = useDispatch();
-  const user = useSelector(selectUser);
+  const user = useSelector(selectUser);  // ログイン状態の取得
 
   return (
     <header className="header">
@@ -14,7 +14,7 @@ const Header = () => {
       <nav className="header__nav">
         {user ? (
           <div className="header__user-info">
-            <span className="header__username">{user.username}</span>
+            <span className="header__username">{user.name || user.email}</span>  {/* ユーザー名またはメールアドレスの表示 */}
             <button className="header__button" onClick={() => dispatch(logout())}>
               ログアウト
             </button>
