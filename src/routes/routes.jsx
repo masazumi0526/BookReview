@@ -1,8 +1,10 @@
+// src/routes/routes.jsx
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import SignupPage from "../pages/SignupPage";
 import LoginPage from "../pages/LoginPage";
 import BookListPage from "../pages/BookListPage";
+import ProfilePage from "../pages/ProfilePage"; // 追加
 import { selectUser } from "../store/authSlice";
 
 const PrivateRoute = ({ element }) => {
@@ -13,13 +15,10 @@ const PrivateRoute = ({ element }) => {
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* 初期ページ（"/"）にアクセスしたら 書籍一覧ページにリダイレクト */}
       <Route path="/" element={<Navigate to="/public/books" replace />} />
-      
-      {/* ログイン済みの場合は書籍一覧にリダイレクト */}
       <Route path="/signup" element={<PrivateRoute element={<SignupPage />} />} />
       <Route path="/login" element={<PrivateRoute element={<LoginPage />} />} />
-      
+      <Route path="/profile" element={<PrivateRoute element={<ProfilePage />} />} /> {/* 追加 */}
       <Route path="/public/books" element={<BookListPage />} />
     </Routes>
   );

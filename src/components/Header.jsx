@@ -14,7 +14,8 @@ const Header = () => {
       <nav className="header__nav">
         {user ? (
           <div className="header__user-info">
-            <span className="header__username">{user.name || user.email}</span>  {/* ユーザー名またはメールアドレスの表示 */}
+            <span className="header__username">{user.name || user.email}</span> {/* ユーザー名またはメールアドレスの表示 */}
+            <Link to="/profile" className="header__button">ユーザー情報編集</Link> {/* ユーザー情報編集リンク */}
             <button className="header__button" onClick={() => dispatch(logout())}>
               ログアウト
             </button>
