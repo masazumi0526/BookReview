@@ -11,15 +11,15 @@ const BookDetailPage = () => {
   const book = useSelector(selectCurrentBook);
   const error = useSelector(selectBookError);
   const loading = useSelector(selectLoading);
-  const token = useSelector(selectToken); // ✅ 修正: `selectToken` を取得
+  const token = useSelector(selectToken); // 修正: `selectToken` を取得
 
   useEffect(() => {
     console.log("Fetching book with ID:", id);
-    console.log("Token:", token); // ✅ デバッグ用ログ
+    console.log("Token:", token); // デバッグ用ログ
     if (id) {
       dispatch(fetchBookById(id));
     }
-  }, [dispatch, id, token]); // ✅ `token` も依存配列に追加
+  }, [dispatch, id, token]); // `token` も依存配列に追加
 
   if (loading) {
     return <p>Loading...</p>;
@@ -36,8 +36,8 @@ const BookDetailPage = () => {
   return (
     <div className="book-detail-container">
       <h2>{book.title}</h2>
-      <p><strong>著者:</strong> {book.reviewer}</p>
       <p><strong>詳細:</strong> {book.detail}</p>
+      <p><strong>投稿者:</strong> {book.reviewer}</p>
       <p><strong>レビュー:</strong> {book.review}</p>
     </div>
   );
