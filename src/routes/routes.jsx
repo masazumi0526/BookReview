@@ -14,14 +14,22 @@ const PrivateRoute = ({ element }) => {
 };
 
 const AppRoutes = () => {
+  const user = useSelector(selectUser);
+
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/public/books" replace />} />
-      <Route path="/signup" element={<SignupPage />} />
-      <Route path="/login" element={<LoginPage />} />
+      <Route 
+        path="/signup" 
+        element={user ? <Navigate to="/public/books" replace /> : <SignupPage />} 
+      />
+      <Route 
+        path="/login" 
+        element={user ? <Navigate to="/public/books" replace /> : <LoginPage />} 
+      />
       <Route path="/profile" element={<PrivateRoute element={<ProfilePage />} />} />
       <Route path="/public/books" element={<BookListPage />} />
-      <Route path="/public/books/:id" element={<BookDetailPage />} /> {/* 書籍詳細ページへのルートを設定 */}
+      <Route path="/public/books/:id" element={<BookDetailPage />} /> {/* 書籍詳細ページ */}
       <Route path="/new" element={<PrivateRoute element={<NewBookPage />} />} />
     </Routes>
   );
