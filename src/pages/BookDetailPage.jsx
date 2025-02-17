@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { fetchBookById, selectCurrentBook, selectBookError } from "../store/bookSlice";
-import { selectToken } from "../store/authSlice";
+import { fetchBookById, selectCurrentBook, selectBookError, selectLoading } from "../store/bookSlice";
+import { selectToken } from "../store/authSlice"; // ✅ 修正: `selectToken` をインポート
 import "../styles/BookDetailPage.css";
 
 const BookDetailPage = () => {
@@ -10,37 +10,18 @@ const BookDetailPage = () => {
   const dispatch = useDispatch();
   const book = useSelector(selectCurrentBook);
   const error = useSelector(selectBookError);
-  const token = useSelector(selectToken);
+  const loading = useSelector(selectLoading);
+  const token = useSelector(selectToken); // ✅ 修正: `selectToken` を取得
 
   useEffect(() => {
+    console.log("Fetching book with ID:", id);
+    console.log("Token:", token); // ✅ デバッグ用ログ
     if (id) {
       dispatch(fetchBookById(id));
-
-      // 書籍選択ログを送信
-      if (token) {
-        fetch("https://railway.bookreview.techtrain.dev/logs", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ selectBookId: id }),
-        }).catch((err) => console.error("ログ送信エラー:", err));
-      }
-
-      // 詳細ページ閲覧ログを送信
-      fetch("https://railway.bookreview.techtrain.dev/api/logs", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : "",
-        },
-        body: JSON.stringify({ event: "view_detail", bookId: id }),
-      }).catch((err) => console.error("詳細ページログ送信エラー:", err));
     }
-  }, [dispatch, id, token]);
+  }, [dispatch, id, token]); // ✅ `token` も依存配列に追加
 
-  if (!book) {
+  if (loading) {
     return <p>Loading...</p>;
   }
 
@@ -48,11 +29,16 @@ const BookDetailPage = () => {
     return <p className="error-message">エラー: {error}</p>;
   }
 
+  if (!book) {
+    return <p>データがありません。</p>;
+  }
+
   return (
     <div className="book-detail-container">
       <h2>{book.title}</h2>
-      <p><strong>著者:</strong> {book.author}</p>
-      <p><strong>概要:</strong> {book.description}</p>
+      <p><strong>著者:</strong> {book.reviewer}</p>
+      <p><strong>詳細:</strong> {book.detail}</p>
+      <p><strong>レビュー:</strong> {book.review}</p>
     </div>
   );
 };

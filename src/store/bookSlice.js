@@ -10,16 +10,29 @@ export const fetchBooks = createAsyncThunk("books/fetchBooks", async (page) => {
 
 // 書籍詳細を取得する非同期処理
 export const fetchBookById = createAsyncThunk("books/fetchBookById", async (bookId, { dispatch, getState }) => {
-  const response = await fetch(`https://railway.bookreview.techtrain.dev/public/books/${bookId}`);
+  const token = getState().auth.token; // トークンを取得
+
+  if (!token) {
+    throw new Error("トークンが存在しません"); // トークンがなければエラー
+  }
+
+  const response = await fetch(`https://railway.bookreview.techtrain.dev/books/${bookId}`, {
+    method: "GET",
+    headers: {
+      "Authorization": `Bearer ${token}`, // トークンをAuthorizationヘッダーに追加
+    },
+  });
+
   if (!response.ok) {
     throw new Error("書籍情報の取得に失敗しました");
   }
+
   const bookData = await response.json();
 
   // 書籍選択時にログを送信
-  const token = getState().auth.token;
   await dispatch(logBookSelection({ selectBookId: bookId, token }));
-  return bookData;
+
+  return bookData; // 正しいデータ構造で返す
 });
 
 // 書籍選択ログを送信する非同期処理
@@ -52,7 +65,7 @@ const bookSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchBookById.pending, (state) => {
-        state.loading = true; // ローディング状態を追加
+        state.loading = true;
       })
       .addCase(fetchBookById.fulfilled, (state, action) => {
         state.currentBook = action.payload;
@@ -71,5 +84,5 @@ export const selectBooks = (state) => state.books.books;
 export const selectPage = (state) => state.books.page;
 export const selectCurrentBook = (state) => state.books.currentBook;
 export const selectBookError = (state) => state.books.error;
-export const selectLoading = (state) => state.books.loading; // ローディング状態を選択
+export const selectLoading = (state) => state.books.loading;
 export default bookSlice.reducer;

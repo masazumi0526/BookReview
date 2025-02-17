@@ -17,15 +17,11 @@ const BookListPage = () => {
   }, [dispatch, page]);
 
   useEffect(() => {
-    // ローカルストレージから著者情報を取得
     const storedAuthors = JSON.parse(localStorage.getItem("book_authors")) || {};
-
-    // 書籍リストに著者情報を付加
     const updatedBooks = books.map(book => ({
       ...book,
-      author: storedAuthors[book.id] || "不明", // ローカルストレージにない場合は "不明"
+      author: storedAuthors[book.id] || "不明",
     }));
-
     setBooksWithAuthors(updatedBooks);
   }, [books]);
 
