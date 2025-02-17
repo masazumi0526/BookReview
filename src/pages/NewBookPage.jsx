@@ -70,14 +70,14 @@ const NewBookPage = () => {
           validation={{ required: "必須項目です" }} 
           error={errors.author} 
         />
-        {/* <InputField 
+        <InputField 
           label="書籍URL" 
           type="url" 
           name="url" 
           register={register} 
           validation={{ required: "必須項目です" }} 
           error={errors.url} 
-        /> */}
+        />
         <InputField 
           label="詳細" 
           type="text" 

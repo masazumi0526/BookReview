@@ -23,10 +23,10 @@ const ProfilePage = () => {
   useEffect(() => {
     console.log("Redux user:", user); // デバッグ用
     if (user) {
-      setValue("username", user.name || "");
-      setValue("email", user.email || "");
+      setValue("username", user.name || ""); // ユーザー名をデフォルトに設定
+      setValue("email", user.email || ""); // メールアドレスをデフォルトに設定
       setValue("password", "********"); // パスワードは隠す
-      setImage(user.iconUrl || null);
+      setImage(user.iconUrl || null); // アイコンURLをデフォルトに設定
     }
   }, [user, setValue]);
 
@@ -63,8 +63,8 @@ const ProfilePage = () => {
       const requestBody = {
         name: data.username,
         email: data.email,
-        password: data.password !== "********" ? data.password : undefined,
-        iconUrl: updatedIconUrl,
+        password: data.password !== "********" ? data.password : undefined, // パスワードが変更された場合のみ更新
+        iconUrl: updatedIconUrl, // アイコンURLも更新
       };
 
       const response = await fetch("https://railway.bookreview.techtrain.dev/users", {
