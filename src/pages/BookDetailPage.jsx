@@ -27,6 +27,16 @@ const BookDetailPage = () => {
           body: JSON.stringify({ selectBookId: id }),
         }).catch((err) => console.error("ログ送信エラー:", err));
       }
+
+      // 詳細ページ閲覧ログを送信
+      fetch("https://railway.bookreview.techtrain.dev/api/logs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+        body: JSON.stringify({ event: "view_detail", bookId: id }),
+      }).catch((err) => console.error("詳細ページログ送信エラー:", err));
     }
   }, [dispatch, id, token]);
 
