@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { selectToken } from "../store/authSlice";
 import InputField from "../components/InputField";
@@ -11,9 +11,7 @@ const NewBookPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const token = useSelector(selectToken);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
-  // 書籍レビューを新規投稿する関数
   const onSubmit = async (data) => {
     try {
       const response = await fetch("https://railway.bookreview.techtrain.dev/books", {
@@ -36,12 +34,6 @@ const NewBookPage = () => {
         throw new Error(result.ErrorMessageJP || "レビュー投稿に失敗しました");
       }
 
-      // ローカルストレージに著者情報を保存
-      const storedAuthors = JSON.parse(localStorage.getItem("book_authors")) || {};
-      storedAuthors[result.id] = data.author; // 書籍IDと著者を紐づけて保存
-      localStorage.setItem("book_authors", JSON.stringify(storedAuthors));
-
-      // 投稿成功後、書籍一覧画面に遷移
       navigate("/public/books");
     } catch (error) {
       setErrorMessage(error.message);
@@ -60,15 +52,6 @@ const NewBookPage = () => {
           register={register} 
           validation={{ required: "必須項目です" }} 
           error={errors.title} 
-        />
-        {/* 「著者」入力欄を追加 */}
-        <InputField 
-          label="著者" 
-          type="text" 
-          name="author" 
-          register={register} 
-          validation={{ required: "必須項目です" }} 
-          error={errors.author} 
         />
         <InputField 
           label="書籍URL" 
@@ -94,7 +77,6 @@ const NewBookPage = () => {
           validation={{ required: "必須項目です" }} 
           error={errors.review} 
         />
-
         <button type="submit">投稿</button>
       </form>
     </div>

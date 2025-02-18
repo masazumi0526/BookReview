@@ -62,8 +62,8 @@ const ProfilePage = () => {
 
       const requestBody = {
         name: data.username,
-        email: data.email,
-        password: data.password !== "********" ? data.password : undefined, // パスワードが変更された場合のみ更新
+        // email: data.email,
+        // password: data.password !== "********" ? data.password : undefined, // パスワードが変更された場合のみ更新
         iconUrl: updatedIconUrl, // アイコンURLも更新
       };
 
@@ -107,7 +107,7 @@ const ProfilePage = () => {
           validation={{ required: "必須項目です" }}
           error={errors.username}
         />
-        <InputField
+        {/* <InputField
           label="メールアドレス"
           type="email"
           name="email"
@@ -122,7 +122,7 @@ const ProfilePage = () => {
           register={register}
           validation={{ required: "必須項目です", minLength: { value: 6, message: "6文字以上必要です" } }}
           error={errors.password}
-        />
+        /> */}
 
         {/* 🔹 `initialImage={image}` を渡して、デフォルト画像を適用 */}
         <ImageUploader setImage={setImage} initialImage={image} />
