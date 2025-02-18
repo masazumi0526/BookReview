@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { selectUser, selectToken, login } from "../store/authSlice";
+import { useSelector } from "react-redux";
+import { selectToken } from "../store/authSlice";
 import InputField from "../components/InputField";
 import ImageUploader from "../components/ImageUploader";
 import { useNavigate } from "react-router-dom";
@@ -9,22 +9,44 @@ import "../styles/form.css";
 
 const ProfilePage = () => {
   const { register, handleSubmit, setValue, formState: { errors } } = useForm();
-  const reduxUser = useSelector(selectUser);
   const token = useSelector(selectToken);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [image, setImage] = useState(reduxUser?.iconUrl || null);
+  const [image, setImage] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  useEffect(() => {
-    if (reduxUser) {
-      setValue("username", reduxUser.name || "");
-      setValue("email", reduxUser.email || "");
-      setImage(reduxUser.iconUrl || null);
+  // ユーザー情報を API から取得する関数
+  const fetchUserProfile = async () => {
+    try {
+      const response = await fetch("https://railway.bookreview.techtrain.dev/users", {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!response.ok) {
+        throw new Error("ユーザー情報の取得に失敗しました");
+      }
+
+      const user = await response.json();
+      setValue("username", user.name || "");
+      setValue("email", user.email || "");
+      setImage(user.iconUrl || null);
+      localStorage.setItem("user", JSON.stringify(user));
+    } catch (error) {
+      setErrorMessage(error.message);
     }
-  }, [reduxUser, setValue]);
+  };
+
+  // 初回レンダリング時にユーザー情報を取得
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  // ユーザー情報をローカルストレージに保存
+  const updateUserProfile = (user) => {
+    localStorage.setItem("user", JSON.stringify(user));
+  };
 
   const uploadIcon = async (file) => {
     const formData = new FormData();
@@ -47,7 +69,7 @@ const ProfilePage = () => {
   const onSubmit = async (data) => {
     try {
       let updatedIconUrl = image;
-      if (image && image !== reduxUser?.iconUrl) {
+      if (image && image !== localStorage.getItem("user")?.iconUrl) {
         updatedIconUrl = await uploadIcon(image);
       }
 
@@ -64,7 +86,7 @@ const ProfilePage = () => {
 
       setSuccessMessage("ユーザー情報が正常に更新されました。");
       const updatedUser = await response.json();
-      dispatch(login({ user: updatedUser, token }));
+      updateUserProfile(updatedUser);
 
       setTimeout(() => navigate("/public/books"), 1000);
     } catch (error) {
