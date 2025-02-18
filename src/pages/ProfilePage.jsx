@@ -14,48 +14,17 @@ const ProfilePage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [userData, setUserData] = useState(reduxUser); // 🔹 ユーザー情報を useState で管理
   const [image, setImage] = useState(reduxUser?.iconUrl || null);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  // 🔹 API からユーザー情報を取得し、Redux と state を更新
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await fetch("https://railway.bookreview.techtrain.dev/users", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("ユーザー情報の取得に失敗しました");
-        }
-
-        const fetchedUser = await response.json();
-        setUserData(fetchedUser);
-        setImage(fetchedUser.iconUrl || null);
-        dispatch(login({ user: fetchedUser, token })); // Redux も更新
-      } catch (error) {
-        setErrorMessage(error.message);
-      }
-    };
-
-    if (!reduxUser && token) {
-      fetchUser();
+    if (reduxUser) {
+      setValue("username", reduxUser.name || "");
+      setValue("email", reduxUser.email || "");
+      setImage(reduxUser.iconUrl || null);
     }
-  }, [reduxUser, token, dispatch]);
-
-  // 🔹 ユーザー情報が取得できたらフォームに反映
-  useEffect(() => {
-    if (userData) {
-      setValue("username", userData.name || "");
-      setValue("email", userData.email || "");
-      setValue("password", "********");
-    }
-  }, [userData, setValue]);
+  }, [reduxUser, setValue]);
 
   const uploadIcon = async (file) => {
     const formData = new FormData();
@@ -63,9 +32,7 @@ const ProfilePage = () => {
 
     const response = await fetch("https://railway.bookreview.techtrain.dev/uploads", {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
       body: formData,
     });
 
@@ -80,22 +47,14 @@ const ProfilePage = () => {
   const onSubmit = async (data) => {
     try {
       let updatedIconUrl = image;
-
-      if (image && image !== userData?.iconUrl) {
+      if (image && image !== reduxUser?.iconUrl) {
         updatedIconUrl = await uploadIcon(image);
       }
 
-      const requestBody = {
-        name: data.username,
-        iconUrl: updatedIconUrl,
-      };
-
+      const requestBody = { name: data.username, iconUrl: updatedIconUrl };
       const response = await fetch("https://railway.bookreview.techtrain.dev/users", {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(requestBody),
       });
 
@@ -104,14 +63,10 @@ const ProfilePage = () => {
       }
 
       setSuccessMessage("ユーザー情報が正常に更新されました。");
-
       const updatedUser = await response.json();
-      setUserData(updatedUser); // 🔹 `useState` の `userData` を更新
       dispatch(login({ user: updatedUser, token }));
 
-      setTimeout(() => {
-        navigate("/public/books");
-      }, 1000);
+      setTimeout(() => navigate("/public/books"), 1000);
     } catch (error) {
       setErrorMessage(error.message);
     }
@@ -131,9 +86,7 @@ const ProfilePage = () => {
           validation={{ required: "必須項目です" }}
           error={errors.username}
         />
-
         <ImageUploader setImage={setImage} initialImage={image} />
-
         <button type="submit">更新</button>
       </form>
     </div>
