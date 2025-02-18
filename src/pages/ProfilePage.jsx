@@ -9,29 +9,55 @@ import "../styles/form.css";
 
 const ProfilePage = () => {
   const { register, handleSubmit, setValue, formState: { errors } } = useForm();
-  const user = useSelector(selectUser);
+  const reduxUser = useSelector(selectUser);
   const token = useSelector(selectToken);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // 🔹 `null` で初期化し、`useEffect` で `user` の値をセット
-  const [image, setImage] = useState(null);
+  const [userData, setUserData] = useState(reduxUser); // 🔹 ユーザー情報を useState で管理
+  const [image, setImage] = useState(reduxUser?.iconUrl || null);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  // 🔹 `user` のデータを Redux から取得し、フォームに反映
+  // 🔹 API からユーザー情報を取得し、Redux と state を更新
   useEffect(() => {
-    console.log("Redux user:", user); // デバッグ用
-    if (user) {
-      setValue("username", user.name || ""); // ユーザー名をデフォルトに設定
-      setValue("email", user.email || ""); // メールアドレスをデフォルトに設定
-      setValue("password", "********"); // パスワードは隠す
-      setImage(user.iconUrl || null); // アイコンURLをデフォルトに設定
-    }
-  }, [user, setValue]);
+    const fetchUser = async () => {
+      try {
+        const response = await fetch("https://railway.bookreview.techtrain.dev/users", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-  // 🔹 アイコン画像アップロード処理
-  const uploadIcon = async (file, token) => {
+        if (!response.ok) {
+          throw new Error("ユーザー情報の取得に失敗しました");
+        }
+
+        const fetchedUser = await response.json();
+        setUserData(fetchedUser);
+        setImage(fetchedUser.iconUrl || null);
+        dispatch(login({ user: fetchedUser, token })); // Redux も更新
+      } catch (error) {
+        setErrorMessage(error.message);
+      }
+    };
+
+    if (!reduxUser && token) {
+      fetchUser();
+    }
+  }, [reduxUser, token, dispatch]);
+
+  // 🔹 ユーザー情報が取得できたらフォームに反映
+  useEffect(() => {
+    if (userData) {
+      setValue("username", userData.name || "");
+      setValue("email", userData.email || "");
+      setValue("password", "********");
+    }
+  }, [userData, setValue]);
+
+  const uploadIcon = async (file) => {
     const formData = new FormData();
     formData.append("icon", file);
 
@@ -51,20 +77,17 @@ const ProfilePage = () => {
     return result.iconUrl;
   };
 
-  // 🔹 ユーザー情報更新処理
   const onSubmit = async (data) => {
     try {
       let updatedIconUrl = image;
 
-      if (image && image !== user?.iconUrl) {
-        updatedIconUrl = await uploadIcon(image, token);
+      if (image && image !== userData?.iconUrl) {
+        updatedIconUrl = await uploadIcon(image);
       }
 
       const requestBody = {
         name: data.username,
-        // email: data.email,
-        // password: data.password !== "********" ? data.password : undefined, // パスワードが変更された場合のみ更新
-        iconUrl: updatedIconUrl, // アイコンURLも更新
+        iconUrl: updatedIconUrl,
       };
 
       const response = await fetch("https://railway.bookreview.techtrain.dev/users", {
@@ -83,6 +106,7 @@ const ProfilePage = () => {
       setSuccessMessage("ユーザー情報が正常に更新されました。");
 
       const updatedUser = await response.json();
+      setUserData(updatedUser); // 🔹 `useState` の `userData` を更新
       dispatch(login({ user: updatedUser, token }));
 
       setTimeout(() => {
@@ -107,24 +131,7 @@ const ProfilePage = () => {
           validation={{ required: "必須項目です" }}
           error={errors.username}
         />
-        {/* <InputField
-          label="メールアドレス"
-          type="email"
-          name="email"
-          register={register}
-          validation={{ required: "必須項目です" }}
-          error={errors.email}
-        />
-        <InputField
-          label="パスワード"
-          type="password"
-          name="password"
-          register={register}
-          validation={{ required: "必須項目です", minLength: { value: 6, message: "6文字以上必要です" } }}
-          error={errors.password}
-        /> */}
 
-        {/* 🔹 `initialImage={image}` を渡して、デフォルト画像を適用 */}
         <ImageUploader setImage={setImage} initialImage={image} />
 
         <button type="submit">更新</button>
