@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { selectToken, selectUser, login } from "../store/authSlice"; // login アクションをインポート
+import { useSelector } from "react-redux";
+import { selectToken } from "../store/authSlice";
 import InputField from "../components/InputField";
 import ImageUploader from "../components/ImageUploader";
 import { useNavigate } from "react-router-dom";
@@ -10,8 +10,6 @@ import "../styles/form.css";
 const ProfilePage = () => {
   const { register, handleSubmit, setValue, formState: { errors } } = useForm();
   const token = useSelector(selectToken);
-  const user = useSelector(selectUser);
-  const dispatch = useDispatch(); // Redux の dispatch を取得
   const navigate = useNavigate();
 
   const [image, setImage] = useState(null);
@@ -30,14 +28,13 @@ const ProfilePage = () => {
         throw new Error("ユーザー情報の取得に失敗しました");
       }
 
-      const userData = await response.json();
-      setValue("username", userData.name || "");
-      setValue("email", userData.email || "");
-      setImage(userData.iconUrl || null);
+      const user = await response.json();
+      setValue("username", user.name || "");
+      setValue("email", user.email || "");
+      setImage(user.iconUrl || null);
 
-      // Redux の user ステートを更新
-      dispatch(login({ user: userData, token }));
-
+      // ローカルストレージに保存
+      localStorage.setItem("user", JSON.stringify(user));
     } catch (error) {
       setErrorMessage(error.message);
     }
@@ -46,6 +43,11 @@ const ProfilePage = () => {
   useEffect(() => {
     fetchUserProfile();
   }, []);
+
+  // ユーザー情報をローカルストレージに保存
+  const updateUserProfile = (user) => {
+    localStorage.setItem("user", JSON.stringify(user));
+  };
 
   const uploadIcon = async (file) => {
     const formData = new FormData();
@@ -68,7 +70,7 @@ const ProfilePage = () => {
   const onSubmit = async (data) => {
     try {
       let updatedIconUrl = image;
-      if (image && image !== user?.iconUrl) {
+      if (image && image !== JSON.parse(localStorage.getItem("user"))?.iconUrl) {
         updatedIconUrl = await uploadIcon(image);
       }
 
@@ -86,9 +88,10 @@ const ProfilePage = () => {
       setSuccessMessage("ユーザー情報が正常に更新されました。");
       const updatedUser = await response.json();
 
-      // Redux の user ステートを更新
-      dispatch(login({ user: updatedUser, token }));
+      // ローカルストレージに保存
+      updateUserProfile(updatedUser);
 
+      // 1秒後に遷移
       setTimeout(() => navigate("/public/books"), 1000);
     } catch (error) {
       setErrorMessage(error.message);
