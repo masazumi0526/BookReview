@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBooks, selectBooks, selectPage } from "../store/bookSlice";
+import { selectUser } from "../store/authSlice"; // 追加
 import BookList from "../components/BookList";
 import Pagination from "../components/Pagination";
 import Header from "../components/Header";
@@ -10,6 +11,7 @@ const BookListPage = () => {
   const dispatch = useDispatch();
   const books = useSelector(selectBooks);
   const page = useSelector(selectPage);
+  const user = useSelector(selectUser); // ログインユーザー取得
 
   useEffect(() => {
     dispatch(fetchBooks(page));
@@ -19,7 +21,7 @@ const BookListPage = () => {
     <div>
       <Header />
       <div className="book-list-container">
-        <BookList books={books} />
+        <BookList books={books} currentUserId={user?.id} />
         <Pagination />
       </div>
     </div>

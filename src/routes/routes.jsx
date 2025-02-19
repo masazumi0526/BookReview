@@ -6,6 +6,7 @@ import BookListPage from "../pages/BookListPage";
 import BookDetailPage from "../pages/BookDetailPage";
 import ProfilePage from "../pages/ProfilePage";
 import NewBookPage from "../pages/NewBookPage";
+import BookEditPage from "../pages/BookEditPage"; // 追加
 import { selectUser } from "../store/authSlice";
 
 const PrivateRoute = ({ element }) => {
@@ -31,6 +32,7 @@ const AppRoutes = () => {
       <Route path="/public/books" element={<BookListPage />} />
       <Route path="/public/books/:id" element={<BookDetailPage />} /> {/* 書籍詳細ページ */}
       <Route path="/new" element={<PrivateRoute element={<NewBookPage />} />} />
+      <Route path="/edit/:id" element={<PrivateRoute element={<BookEditPage />} />} /> {/* 編集ページ追加 */}
     </Routes>
   );
 };
