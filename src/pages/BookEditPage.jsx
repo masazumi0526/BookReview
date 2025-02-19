@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchBookById, selectCurrentBook } from "../store/bookSlice";
 import { selectToken } from "../store/authSlice";
+import "../styles/BookEditPage.css";
 
 const BookEditPage = () => {
   const { id } = useParams();
@@ -13,6 +14,7 @@ const BookEditPage = () => {
   
   const [title, setTitle] = useState("");
   const [review, setReview] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (token) {
@@ -22,12 +24,14 @@ const BookEditPage = () => {
 
   useEffect(() => {
     if (book) {
-      setTitle(book.title);
-      setReview(book.review);
+      setTitle(book.title || "");
+      setReview(book.review || "");
     }
   }, [book]);
 
   const handleUpdate = async () => {
+    if (!book) return;
+
     try {
       const response = await fetch(`https://railway.bookreview.techtrain.dev/books/${id}`, {
         method: "PUT",
@@ -35,18 +39,27 @@ const BookEditPage = () => {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ title, review }),
+        body: JSON.stringify({
+          id: book.id,
+          title,
+          url: book.url,
+          detail: book.detail,
+          review,
+          reviewer: book.reviewer,
+          isMine: book.isMine,
+        }),
       });
 
-      if (response.ok) {
-        alert("更新しました");
-        navigate("/");
-      } else {
-        throw new Error("更新に失敗しました");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "更新に失敗しました");
       }
+
+      alert("更新しました");
+      navigate("/");
     } catch (error) {
       console.error(error);
-      alert("エラーが発生しました");
+      setError(error.message);
     }
   };
 
@@ -61,27 +74,46 @@ const BookEditPage = () => {
         },
       });
 
-      if (response.ok) {
-        alert("削除しました");
-        navigate("/");
-      } else {
-        throw new Error("削除に失敗しました");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "削除に失敗しました");
       }
+
+      alert("削除しました");
+      navigate("/");
     } catch (error) {
       console.error(error);
-      alert("エラーが発生しました");
+      setError(error.message);
     }
   };
 
+  if (!book) {
+    return <p className="loading-text">読み込み中...</p>;
+  }
+
   return (
-    <div>
-      <h2>レビュー編集</h2>
-      <label>タイトル</label>
-      <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-      <label>レビュー</label>
-      <textarea value={review} onChange={(e) => setReview(e.target.value)} />
-      <button onClick={handleUpdate}>更新</button>
-      <button onClick={handleDelete} style={{ color: "red" }}>削除</button>
+    <div className="edit-container">
+      <h2 className="edit-title">レビュー編集</h2>
+
+      {error && <p className="error-message">{error}</p>}
+
+      <label className="edit-label">タイトル</label>
+      <input
+        type="text"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        className="edit-input"
+      />
+
+      <label className="edit-label">レビュー</label>
+      <textarea
+        value={review}
+        onChange={(e) => setReview(e.target.value)}
+        className="edit-textarea"
+      />
+
+      <button onClick={handleUpdate} className="update-button">更新</button>
+      <button onClick={handleDelete} className="delete-button">削除</button>
     </div>
   );
 };
