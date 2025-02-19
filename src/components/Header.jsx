@@ -33,10 +33,10 @@ const Header = () => {
       <nav className="header__nav">
         {user ? (
           <div className="header__user-info">
-            <span className="header__username">{user.name || user.email}</span>
             {user.iconUrl && (
               <img src={user.iconUrl} alt="User Icon" className="header__user-icon" />
             )}
+            <span className="header__username">{user.name || user.email}</span>
             <Link to="/profile" className="header__button">ユーザー情報編集</Link>
             <Link to="/new" className="header__button">レビュー投稿</Link>
             <button className="header__button" onClick={handleLogout}>
