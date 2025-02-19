@@ -9,21 +9,20 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // ローカルストレージからユーザー情報を取得
   const getUserFromLocalStorage = () => {
     return JSON.parse(localStorage.getItem("user")) || null;
   };
 
-  // ユーザー情報を state に格納
   const [user, setUser] = useState(getUserFromLocalStorage());
 
   useEffect(() => {
-    // ページがマウントされたら最新のユーザー情報を取得
     setUser(getUserFromLocalStorage());
-  }, [navigate]); // `navigate` の変更を監視し、ページ遷移時に更新
+  }, [navigate]);
 
   const handleLogout = () => {
     dispatch(logout());
+    localStorage.removeItem("user");
+    setUser(null);
     navigate("/login");
   };
 

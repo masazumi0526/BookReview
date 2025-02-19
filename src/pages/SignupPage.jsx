@@ -29,6 +29,9 @@ const SignupPage = () => {
     if (!response.ok) {
       throw new Error("アイコンのアップロードに失敗しました");
     }
+
+    const result = await response.json();
+    return result.iconUrl;
   };
 
   const onSubmit = async (data) => {
@@ -51,14 +54,15 @@ const SignupPage = () => {
         throw new Error(userResult.ErrorMessageJP || "ユーザー登録に失敗しました");
       }
 
-      // 認証情報を Redux に保存
-      dispatch(login({ user: { email: data.email }, token: userResult.token }));
-
-      // アイコン画像がある場合はアップロード
+      let iconUrl = "";
       if (image) {
-        await uploadIcon(image, userResult.token);
+        iconUrl = await uploadIcon(image, userResult.token);
       }
 
+      const userData = { email: data.email, name: data.username, iconUrl };
+      dispatch(login({ user: userData, token: userResult.token }));
+      localStorage.setItem("user", JSON.stringify(userData));
+      
       navigate("/public/books");
     } catch (error) {
       setErrorMessage(error.message);
