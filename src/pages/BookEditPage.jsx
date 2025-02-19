@@ -11,9 +11,12 @@ const BookEditPage = () => {
   const navigate = useNavigate();
   const book = useSelector(selectCurrentBook);
   const token = useSelector(selectToken);
-  
+
   const [title, setTitle] = useState("");
+  const [url, setUrl] = useState("");
+  const [detail, setDetail] = useState("");
   const [review, setReview] = useState("");
+  const [reviewer, setReviewer] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -25,7 +28,10 @@ const BookEditPage = () => {
   useEffect(() => {
     if (book) {
       setTitle(book.title || "");
+      setUrl(book.url || "");
+      setDetail(book.detail || "");
       setReview(book.review || "");
+      setReviewer(book.reviewer || "");
     }
   }, [book]);
 
@@ -42,10 +48,10 @@ const BookEditPage = () => {
         body: JSON.stringify({
           id: book.id,
           title,
-          url: book.url,
-          detail: book.detail,
+          url,
+          detail,
           review,
-          reviewer: book.reviewer,
+          reviewer,
           isMine: book.isMine,
         }),
       });
@@ -105,11 +111,34 @@ const BookEditPage = () => {
         className="edit-input"
       />
 
+      <label className="edit-label">URL</label>
+      <input
+        type="text"
+        value={url}
+        onChange={(e) => setUrl(e.target.value)}
+        className="edit-input"
+      />
+
+      <label className="edit-label">詳細</label>
+      <textarea
+        value={detail}
+        onChange={(e) => setDetail(e.target.value)}
+        className="edit-textarea"
+      />
+
       <label className="edit-label">レビュー</label>
       <textarea
         value={review}
         onChange={(e) => setReview(e.target.value)}
         className="edit-textarea"
+      />
+
+      <label className="edit-label">レビュワー</label>
+      <input
+        type="text"
+        value={reviewer}
+        onChange={(e) => setReviewer(e.target.value)}
+        className="edit-input"
       />
 
       <button onClick={handleUpdate} className="update-button">更新</button>
