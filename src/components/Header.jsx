@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const dispatch = useDispatch();
-  const user = useSelector(selectUser);
+  const user = useSelector(selectUser); // Redux の user ステートを取得
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -21,9 +21,10 @@ const Header = () => {
       <nav className="header__nav">
         {user ? (
           <div className="header__user-info">
+            {/* <img src={user.iconUrl} alt="User Icon" className="header__user-icon" /> ユーザーアイコンを表示 */}
             <span className="header__username">{user.name || user.email}</span>
             <Link to="/profile" className="header__button">ユーザー情報編集</Link>
-            <Link to="/new" className="header__button">レビュー投稿</Link> {/* 書籍レビュー投稿へのリンク追加 */}
+            <Link to="/new" className="header__button">レビュー投稿</Link>
             <button className="header__button" onClick={handleLogout}>
               ログアウト
             </button>
