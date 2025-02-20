@@ -35,7 +35,7 @@ const Header = () => {
             {user.iconUrl && (
               <img src={user.iconUrl} alt="User Icon" className="header__user-icon" />
             )}
-            <span className="header__username">{user.name || user.email}</span>
+            <span className="header__username">{user.name}</span>
             <Link to="/profile" className="header__button">ユーザー情報編集</Link>
             <Link to="/new" className="header__button">レビュー投稿</Link>
             <button className="header__button" onClick={handleLogout}>
