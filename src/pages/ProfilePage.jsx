@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { selectToken } from "../store/authSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { selectToken, updateUser } from "../store/authSlice";
 import InputField from "../components/InputField";
 import ImageUploader from "../components/ImageUploader";
 import { useNavigate } from "react-router-dom";
@@ -10,13 +10,13 @@ import "../styles/form.css";
 const ProfilePage = () => {
   const { register, handleSubmit, setValue, formState: { errors } } = useForm();
   const token = useSelector(selectToken);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [image, setImage] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  // ユーザー情報を API から取得する関数
   const fetchUserProfile = async () => {
     try {
       const response = await fetch("https://railway.bookreview.techtrain.dev/users", {
@@ -33,8 +33,7 @@ const ProfilePage = () => {
       setValue("email", user.email || "");
       setImage(user.iconUrl || null);
 
-      // ローカルストレージに保存
-      localStorage.setItem("user", JSON.stringify(user));
+      dispatch(updateUser(user));
     } catch (error) {
       setErrorMessage(error.message);
     }
@@ -43,11 +42,6 @@ const ProfilePage = () => {
   useEffect(() => {
     fetchUserProfile();
   }, []);
-
-  // ユーザー情報をローカルストレージに保存
-  const updateUserProfile = (user) => {
-    localStorage.setItem("user", JSON.stringify(user));
-  };
 
   const uploadIcon = async (file) => {
     const formData = new FormData();
@@ -88,10 +82,9 @@ const ProfilePage = () => {
       setSuccessMessage("ユーザー情報が正常に更新されました。");
       const updatedUser = await response.json();
 
-      // ローカルストレージに保存
-      updateUserProfile(updatedUser);
+      dispatch(updateUser(updatedUser));
+      localStorage.setItem("user", JSON.stringify(updatedUser));
 
-      // 1秒後に遷移
       setTimeout(() => navigate("/public/books"), 1000);
     } catch (error) {
       setErrorMessage(error.message);
