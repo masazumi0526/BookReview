@@ -1,28 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Header.css";
-import { useDispatch } from "react-redux";
-import { logout } from "../store/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { logout, selectUser } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const getUserFromLocalStorage = () => {
-    return JSON.parse(localStorage.getItem("user")) || null;
-  };
-
-  const [user, setUser] = useState(getUserFromLocalStorage());
+  const user = useSelector(selectUser);
 
   useEffect(() => {
-    setUser(getUserFromLocalStorage());
-  }, [navigate]);
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (!user && storedUser) {
+      dispatch(login({ user: storedUser, token: localStorage.getItem("token") }));
+    }
+  }, [user, dispatch]);
 
   const handleLogout = () => {
     dispatch(logout());
-    localStorage.removeItem("user");
-    setUser(null);
     navigate("/login");
   };
 

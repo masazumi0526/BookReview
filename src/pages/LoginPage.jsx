@@ -26,10 +26,19 @@ const LoginPage = () => {
         throw new Error(result.ErrorMessageJP);
       }
 
-      // 認証情報を Redux に保存
-      dispatch(login({ user: { email: data.email }, token: result.token }));
+      // ユーザー情報を取得
+      const userProfileResponse = await fetch("https://railway.bookreview.techtrain.dev/users", {
+        method: "GET",
+        headers: { Authorization: `Bearer ${result.token}` },
+      });
 
-      // 書籍一覧画面に遷移
+      const user = await userProfileResponse.json();
+
+      // Redux と localStorage に保存
+      dispatch(login({ user, token: result.token }));
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", result.token);
+
       navigate("/public/books");
     } catch (error) {
       setErrorMessage(error.message);
@@ -43,7 +52,6 @@ const LoginPage = () => {
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <InputField label="メールアドレス" type="email" name="email" register={register} validation={{ required: "必須項目です" }} error={errors.email} />
         <InputField label="パスワード" type="password" name="password" register={register} validation={{ required: "必須項目です" }} error={errors.password} />
-
         <button type="submit">ログイン</button>
       </form>
       <p>
