@@ -133,14 +133,6 @@ const BookEditPage = () => {
         className="edit-textarea"
       />
 
-      <label className="edit-label">レビュワー</label>
-      <input
-        type="text"
-        value={reviewer}
-        onChange={(e) => setReviewer(e.target.value)}
-        className="edit-input"
-      />
-
       <button onClick={handleUpdate} className="update-button">更新</button>
       <button onClick={handleDelete} className="delete-button">削除</button>
     </div>
