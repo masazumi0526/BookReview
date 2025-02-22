@@ -1,81 +1,84 @@
 .edit-container {
-    max-width: 400px;
-    margin: 60px auto;
-    padding: 20px;
-    background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .edit-title {
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 15px;
-  }
-  
-  .error-message {
-    color: red;
-    font-size: 14px;
-    margin-bottom: 10px;
-  }
-  
-  .loading-text {
-    text-align: center;
-    font-size: 16px;
-    margin-top: 50px;
-  }
-  
-  .edit-label {
-    align-self: flex-start;
-    font-weight: bold;
-    margin-top: 10px;
-  }
-  
-  .edit-input,
-  .edit-textarea {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 16px;
-  }
-  
-  .edit-textarea {
-    height: 100px;
-    resize: none;
-  }
-  
-  .update-button,
-  .delete-button {
-    width: 100%;
-    padding: 12px;
-    margin-top: 15px;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  
-  .update-button {
-    background: #4caf50;
-    color: white;
-  }
-  
-  .update-button:hover {
-    background: #45a049;
-  }
-  
-  .delete-button {
-    background: #ff5252;
-    color: white;
-  }
-  
-  .delete-button:hover {
-    background: #d32f2f;
-  }
-  
+  max-width: 400px;
+  margin: 60px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.edit-title {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.loading-text {
+  text-align: center;
+  font-size: 16px;
+  margin-top: 50px;
+}
+
+.edit-label {
+  align-self: flex-start;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.edit-input,
+.edit-textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.edit-textarea {
+  height: 100px;
+  resize: none;
+}
+
+.update-button,
+.delete-button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 影を追加 */
+}
+
+.update-button {
+  background: #388e3c;
+  color: white;
+}
+
+.update-button:hover {
+  background: #2c6e2f;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* ホバー時に影を少し強調 */
+}
+
+.delete-button {
+  background: #e53935;
+  color: white;
+}
+
+.delete-button:hover {
+  background: #b71c1c;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* ホバー時に影を少し強調 */
+}
