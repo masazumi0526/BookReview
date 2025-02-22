@@ -2,8 +2,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #333;
-  color: white;
+  background-color: #111; /* さらに暗い背景色 */
+  color: #f1f1f1; /* 明るい白色に変更 */
   padding: 10px 20px;
 }
 
@@ -35,15 +35,17 @@
 }
 
 .header__button {
-  background-color: #ff5733;
-  color: white;
+  background-color: #d32f2f; /* 強い赤色に変更 */
+  color: #ffffff; /* 白色の文字 */
   border: none;
-  padding: 5px 10px;
+  padding: 10px 20px;
   cursor: pointer;
   border-radius: 5px;
   text-decoration: none;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .header__button:hover {
-  background-color: #ff2e00;
+  background-color: #b71c1c; /* ホバー時にさらに濃い赤色 */
 }
