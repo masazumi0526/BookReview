@@ -33,7 +33,7 @@ const ProfilePage = () => {
       setValue("email", user.email || "");
       setImage(user.iconUrl || null);
 
-      dispatch(updateUser(user));
+      dispatch(updateUser(user)); // Redux で管理し、localStorage の更新も `authSlice.js` で処理
     } catch (error) {
       setErrorMessage(error.message);
     }
@@ -82,8 +82,7 @@ const ProfilePage = () => {
       setSuccessMessage("ユーザー情報が正常に更新されました。");
       const updatedUser = await response.json();
 
-      dispatch(updateUser(updatedUser));
-      localStorage.setItem("user", JSON.stringify(updatedUser));
+      dispatch(updateUser(updatedUser)); // Redux の updateUser で管理
 
       setTimeout(() => navigate("/public/books"), 1000);
     } catch (error) {

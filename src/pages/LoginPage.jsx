@@ -26,7 +26,6 @@ const LoginPage = () => {
         throw new Error(result.ErrorMessageJP);
       }
 
-      // ユーザー情報を取得
       const userProfileResponse = await fetch("https://railway.bookreview.techtrain.dev/users", {
         method: "GET",
         headers: { Authorization: `Bearer ${result.token}` },
@@ -34,10 +33,7 @@ const LoginPage = () => {
 
       const user = await userProfileResponse.json();
 
-      // Redux と localStorage に保存
-      dispatch(login({ user, token: result.token }));
-      localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("token", result.token);
+      dispatch(login({ user, token: result.token })); // Redux の login で管理
 
       navigate("/public/books");
     } catch (error) {
