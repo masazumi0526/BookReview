@@ -52,33 +52,34 @@
 .update-button,
 .delete-button {
   width: 100%;
-  padding: 14px;
+  padding: 12px;
   margin-top: 15px;
   border: none;
   border-radius: 5px;
-  font-size: 18px;
-  font-weight: bold;
+  font-size: 16px;
   cursor: pointer;
   transition: 0.3s;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 影を追加 */
+  font-weight: bold;
 }
 
 .update-button {
-  background: #388e3c;
+  background: #1b5e20; /* 非常に濃い緑 */
   color: white;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); /* 強い影 */
 }
 
 .update-button:hover {
-  background: #2c6e2f;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* ホバー時に影を少し強調 */
+  background: #0d3b0d; /* さらに濃い緑 */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7); /* ホバー時に影を極端に強化 */
 }
 
 .delete-button {
-  background: #e53935;
+  background: #b71c1c; /* 非常に濃い赤 */
   color: white;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); /* 強い影 */
 }
 
 .delete-button:hover {
-  background: #b71c1c;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* ホバー時に影を少し強調 */
+  background: #9a0007; /* さらに濃い赤 */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7); /* ホバー時に影を極端に強化 */
 }
