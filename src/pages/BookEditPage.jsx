@@ -102,31 +102,35 @@ const BookEditPage = () => {
 
       {error && <p className="error-message">{error}</p>}
 
-      <label className="edit-label">タイトル</label>
+      <label htmlFor="title" className="edit-label">タイトル</label>
       <input
         type="text"
+        id="title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         className="edit-input"
       />
 
-      <label className="edit-label">URL</label>
+      <label htmlFor="url" className="edit-label">URL</label>
       <input
         type="text"
+        id="url"
         value={url}
         onChange={(e) => setUrl(e.target.value)}
         className="edit-input"
       />
 
-      <label className="edit-label">詳細</label>
+      <label htmlFor="detail" className="edit-label">詳細</label>
       <textarea
+        id="detail"
         value={detail}
         onChange={(e) => setDetail(e.target.value)}
         className="edit-textarea"
       />
 
-      <label className="edit-label">レビュー</label>
+      <label htmlFor="review" className="edit-label">レビュー</label>
       <textarea
+        id="review"
         value={review}
         onChange={(e) => setReview(e.target.value)}
         className="edit-textarea"
