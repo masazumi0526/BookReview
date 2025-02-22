@@ -38,8 +38,13 @@ const ImageUploader = ({ setImage }) => {
 
   return (
     <div className="image-uploader">
-      <label>プロフィール画像</label>
-      <input type="file" accept="image/jpeg, image/png" onChange={handleImageChange} />
+      <label htmlFor="file-upload">プロフィール画像</label>
+      <input
+        id="file-upload"
+        type="file"
+        accept="image/jpeg, image/png"
+        onChange={handleImageChange}
+      />
       {errorMessage && <p className="error-message">{errorMessage}</p>} {/* エラーメッセージ表示 */}
       {preview && <img src={preview} alt="preview" className="preview-image" />}
     </div>
