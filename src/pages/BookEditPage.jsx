@@ -51,7 +51,6 @@ const BookEditPage = () => {
           url,
           detail,
           review,
-          reviewer,
           isMine: book.isMine,
         }),
       });
