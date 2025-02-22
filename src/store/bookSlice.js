@@ -23,11 +23,11 @@ export const fetchBooks = createAsyncThunk("books/fetchBooks", async (page, { ge
 
   const booksData = await response.json();
 
-  // ログインしている場合、書籍情報に isMine フィールドを追加
+  // API が isMine を直接返してくれるので、自分で userId と比較する必要がない
   return booksData.map(book => ({
     ...book,
-    isMine: token ? book.userId === userId : false, // ログインユーザーの投稿かどうか
-  }));
+    isMine: book.isMine, // API のレスポンスをそのまま使用
+  }));  
 });
 
 // 書籍詳細を取得する非同期処理
