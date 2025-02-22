@@ -5,6 +5,7 @@ import { selectUser } from "../store/authSlice";
 import BookList from "../components/BookList";
 import Pagination from "../components/Pagination";
 import Header from "../components/Header";
+import { Helmet } from "react-helmet"; // react-helmetのインポート
 import "../styles/BookListPage.css";
 
 const BookListPage = () => {
@@ -19,6 +20,10 @@ const BookListPage = () => {
 
   return (
     <div>
+      <Helmet>
+        <meta name="description" content="書籍一覧ページでは、最新の書籍やレビューをチェックできます。多様なジャンルの書籍をご覧ください。" />
+        <title>書籍一覧</title>
+      </Helmet>
       <Header />
       <div className="book-list-container">
         <BookList books={books} currentUserId={user?.id} />
