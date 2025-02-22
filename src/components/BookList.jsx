@@ -8,7 +8,7 @@ const BookList = ({ books }) => {
       {books.map((book) => (
         <li key={book.id} className="book-item">
           <Link to={`/public/books/${book.id}`}>
-            <h3>{book.title}</h3>
+            <h1>{book.title}</h1>
             <p>著者: {book.author}</p>
           </Link>
           {/* ログインユーザーの投稿なら編集ボタンを表示 */}
