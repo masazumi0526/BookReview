@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "../styles/BookList.css";
 
-const BookList = ({ books, currentUserId }) => {
+const BookList = ({ books }) => {
   return (
     <ul className="book-list">
       {books.map((book) => (
@@ -12,7 +12,7 @@ const BookList = ({ books, currentUserId }) => {
             <p>著者: {book.author}</p>
           </Link>
           {/* ログインユーザーの投稿なら編集ボタンを表示 */}
-          {book.userId === currentUserId && (
+          {book.isMine && (
             <Link to={`/edit/${book.id}`} className="edit-button">
               編集
             </Link>

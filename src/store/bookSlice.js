@@ -1,16 +1,39 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 // 書籍リストを取得する非同期処理
-export const fetchBooks = createAsyncThunk("books/fetchBooks", async (page) => {
-  const response = await fetch(
-    `https://railway.bookreview.techtrain.dev/public/books?offset=${page * 10}`
-  );
-  return await response.json();
+export const fetchBooks = createAsyncThunk("books/fetchBooks", async (page, { getState }) => {
+  const token = getState().auth.token; // トークンを取得
+  const userId = getState().auth.user?.id; // ログインユーザーのIDを取得
+
+  let url = `https://railway.bookreview.techtrain.dev/public/books?offset=${page * 10}`;
+
+  if (token) {
+    // ログインしている場合、/books にアクセス
+    url = `https://railway.bookreview.techtrain.dev/books?offset=${page * 10}`;
+  }
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: token ? { "Authorization": `Bearer ${token}` } : {},
+  });
+
+  if (!response.ok) {
+    throw new Error("書籍リストの取得に失敗しました");
+  }
+
+  const booksData = await response.json();
+
+  // ログインしている場合、書籍情報に isMine フィールドを追加
+  return booksData.map(book => ({
+    ...book,
+    isMine: token ? book.userId === userId : false, // ログインユーザーの投稿かどうか
+  }));
 });
 
 // 書籍詳細を取得する非同期処理
 export const fetchBookById = createAsyncThunk("books/fetchBookById", async (bookId, { dispatch, getState }) => {
   const token = getState().auth.token; // トークンを取得
+  const userId = getState().auth.user?.id; // ログインユーザーのID
 
   if (!token) {
     throw new Error("トークンが存在しません"); // トークンがなければエラー
@@ -32,7 +55,10 @@ export const fetchBookById = createAsyncThunk("books/fetchBookById", async (book
   // 書籍選択時にログを送信
   await dispatch(logBookSelection({ selectBookId: bookId, token }));
 
-  return bookData; // 正しいデータ構造で返す
+  return {
+    ...bookData,
+    isMine: bookData.userId === userId, // ログインユーザーの投稿かどうか
+  };
 });
 
 // 書籍選択ログを送信する非同期処理
